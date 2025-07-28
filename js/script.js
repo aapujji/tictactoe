@@ -1,53 +1,68 @@
-const createBoard = () => {
+const gameBoard = () => {
     const board = [];
+    const winPatterns = [
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+        [0,4,8],
+        [2,4,6]
+    ];
+    const checkForWin = () => {
+        for (const pattern of winPatterns) {
+            if (board[pattern[0]] && board[pattern[1]] && board[pattern[2]] && 
+                board[pattern[0]] === board[pattern[1]] && board[pattern[0]] === board[pattern[2]]) {
+                    return true;
+            }
+        }
+        return false
+    }
+    const checkForTie = () => {
+        if (board.length === 9 && !checkForWin()) {
+            return true;
+        }
+        return false;
+    }
     const addMarker = (location, marker) => {
         board[location] = marker;
     }
-    return { board, addMarker };
+    return { board, addMarker, checkForWin, checkForTie };
 }
 
-const createPlayer = (name, marker) => {
+const player = (name, marker) => {
     return { name, marker };
 }
 
 const createGame = () => {
-    const gameBoard = createBoard();
-    const player1 = createPlayer("Aana", "x");
-    const player2 = createPlayer("Joe", "o");
-    console.log(gameBoard, player1, player2);
-
-    
-
-    // const foundWin = false;
-    // const winPatterns = [
-    //     [0,1,2],
-    //     [3,4,5],
-    //     [6,7,8],
-    //     [0,3,6],
-    //     [1,4,7],
-    //     [2,5,8],
-    //     [0,4,8],
-    //     [2,4,6]
-    // ];
-    // const checkForWin = () => {
-    //     for (pattern in winPatterns) {
-    //         foundWin = pattern.every(value => value === pattern[0]);
-    //     }
-    // }
+    const newBoard = gameBoard();
+    const player1 = player("Aana", "x");
+    const player2 = player("Joe", "o");
+    let currentPlayer = player1;
+    const setCurrentPlayer = () => {
+        currentPlayer = currentPlayer === player1 ? player2 : player1;
+        return currentPlayer;
+    }
+    const cacheDom = () => {
+        this.container = document.querySelector(".container");
+    }
+    const render = () => {
+        console.log(`Player 1 ${player1.name} is ${player1.marker}`);
+        console.log(`Player 2 ${player2.name} is ${player2.marker}`);
+    }
+    while (!newBoard.checkForWin() && !newBoard.checkForTie()) {
+        const location = prompt(`${currentPlayer.name}, enter a location on the board:`);
+        newBoard.addMarker(location, currentPlayer.marker);
+        render();
+        if (!newBoard.checkForWin())
+            setCurrentPlayer();
+    }
+    if (newBoard.checkForTie()) {
+        console.log("This was a tie");
+    }
+    if (newBoard.checkForWin()) {
+        console.log(`${currentPlayer.name} has won!`);
+    }
 }
-
 createGame();
-
-// object for the board
-    // has a function to create a new board; board.create
-    // has a function to enter a marker in a specified location
-    // has a function that returns if a win exists
-
-// object for players
-    // has a function to create a new player with a name and a marker
-
-// object that creates a new game
-    // calls the create board function
-    // calls the player function twice (one for each player)
-    // calls the board function to place a marker
-    // calls a function to check for a win
