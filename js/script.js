@@ -1,5 +1,35 @@
-const board = () => {
-    const board = [];
+function GameBoard() {
+    const board = new Array(9).fill("");
+
+    const getBoard = () => {
+        return board;
+    }
+
+    const addMarker = (cell, marker) => {
+        board[cell] = marker;
+    }
+
+    const printBoard = () => {
+        const matrix = `${board[0]} | ${board[1]} | ${board[2]}\n------\n${board[3]} | ${board[4]} | ${board[5]}\n------\n${board[6]} | ${board[7]} | ${board[8]}`;
+        console.log(matrix);
+    }
+
+    return { getBoard, addMarker, printBoard }
+}
+
+function GameController(firstPlayerName, secondPlayerName) {
+    const newBoard = GameBoard();
+
+    const firstPlayer = {
+        name: firstPlayerName,
+        marker: "x",
+    };
+    const secondPlayer = {
+        name: secondPlayerName,
+        marker: "o",
+    };
+    let winner = false;
+    let currentPlayer = firstPlayer;
     const winPatterns = [
         [0,1,2],
         [3,4,5],
@@ -11,77 +41,72 @@ const board = () => {
         [2,4,6]
     ];
 
-    const boardDiv = document.querySelector(".board");
-
-    const _render = () => {
-        boardDiv.innerHTML = "";
-        for (let i = 0; i < 9; i++) {
-            const boardCellDiv = document.createElement("div");
-            boardCellDiv.classList.add("cell");
-            boardCellDiv.dataset.cell = i;
-            boardCellDiv.textContent = board[i] ? board[i] : "";
-            boardDiv.appendChild(boardCellDiv);
-        }
+    const getCurrentPlayer = () => {
+        return currentPlayer;
     }
 
-    const createBoard = () => {
-        _render();
+    const getWinner = () => {
+        return winner;
     }
 
-    const addMarker = (cell, marker) => {
-        board[cell] = marker;
-        _render();
+    const switchCurrentPlayer = () => {
+        currentPlayer = currentPlayer === firstPlayer ? secondPlayer : firstPlayer;
     }
 
-    const checkForWin = () => {
+    const playTurn = (cell) => {
+        newBoard.addMarker(cell, currentPlayer.marker);
+        newBoard.printBoard();
+
+        const board = newBoard.getBoard();
         for (const pattern of winPatterns) {
-            if (board[pattern[0]] && board[pattern[1]] && board[pattern[2]] && 
-                board[pattern[0]] === board[pattern[1]] && board[pattern[0]] === board[pattern[2]]) {
-                    return true;
+            if (board[pattern[0]] && board[pattern[1]] && board[pattern[2]] && board[pattern[0]] === board[pattern[1]] && board[pattern[0]] === board[pattern[2]]) {
+                console.log(`${currentPlayer.name} is the winner!`);
+                winner = true;
+                return;
             }
         }
-        return false;
+
+        switchCurrentPlayer();
     }
 
-    return { createBoard, addMarker, checkForWin };
+    return { getWinner, getCurrentPlayer, playTurn, getBoard: newBoard.getBoard }
 }
 
-const player = (name, marker) => {
-    return { name, marker };
+const UIController = () => {
+    // dom cache
+    const boardDiv = document.querySelector(".board");
+    const firstPlayerName = document.querySelector("input#firstPlayer").value || "Player One";
+    const secondPlayerName = document.querySelector("input#secondPlayer").value || "Player Two";
+
+    const newGame = GameController(firstPlayerName, secondPlayerName);
+    const board = newGame.getBoard();
+
+    const updateBoardUI = () => {
+        boardDiv.textContent = "";
+        board.map((content, cell) => {
+            const cellDiv = document.createElement("div");
+            cellDiv.classList.add("cell");
+            cellDiv.dataset.cell = cell;
+            cellDiv.textContent = content;
+            boardDiv.appendChild(cellDiv);
+        })
+    }
+
+    updateBoardUI();
+
+    document.addEventListener("click", (e) => {
+        const classList = e.target.classList;
+        if (!classList.contains("cell")) return;
+        if (!newGame.getWinner()) {
+            newGame.playTurn(target.dataset.cell);
+            updateBoardUI();
+        }
+    })
 }
 
 (() => {
-    const { createBoard, addMarker, checkForWin } = board();
-    let currentPlayer = {};
-    let firstPlayer = {};
-    let secondPlayer = {};
-    const setCurrentPlayer = (player) => {
-        currentPlayer = player;
-    }
-    const button = document.querySelector(".start-button");
-    button.addEventListener("click", () => {
-        createBoard();
-        const firstPlayerName = document.querySelector("input#firstPlayer").value || "Player One";
-        const secondPlayerName = document.querySelector("input#secondPlayer").value || "Player Two";
-        firstPlayer = player(firstPlayerName, "x");
-        secondPlayer = player(secondPlayerName, "o");
-        setCurrentPlayer(firstPlayer);
-    })
-
-    let hasWinner = false;
-    document.addEventListener("click", (e) => {
-        const target = e.target;
-        if (target.classList.contains("cell") && target.textContent === "") {
-            if (!hasWinner) {
-                addMarker(target.dataset.cell, currentPlayer.marker);
-                if (checkForWin()) {
-                    hasWinner = true;
-                    console.log(`The winner is ${currentPlayer.name}`);
-                } else {
-                    setCurrentPlayer(currentPlayer === firstPlayer ? secondPlayer : firstPlayer);
-                }
-            }
-        }
+    const startButton = document.querySelector(".start-button");
+    startButton.addEventListener("click", () => {
+        UIController();
     });
-
 })();
