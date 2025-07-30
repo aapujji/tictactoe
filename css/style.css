@@ -224,23 +224,6 @@ button {
     }
 }
 
-@media (prefers-color-scheme: light) {
-    body {
-        background-color: var(--white);
-        color: var(--black);
-    }
-
-    .input {
-        background-color: rgba(175, 188, 164, 0.5);
-    }
-
-    .board {
-        .cell {
-            background-color: rgba(175, 188, 164, 0.5);
-        }
-    }
-}
-
 @media (min-width: 767px) {
     .form {
         grid-column: 4 / 10;
