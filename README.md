@@ -3,8 +3,8 @@
 ## Table of contents
 
 - [Overview](#overview)
-    - [Links](#links)
-    - [Install](#install)
+- [Links](#links)
+- [Install](#install)
 
 ## Overview
 
