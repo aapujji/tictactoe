@@ -176,20 +176,27 @@ const UIController = () => {
         updateBoardUI();
     }
 
-    return { updateBoardUI, handleCellClick, resetUI }
+    document.addEventListener("click", (e) => {
+        const target = e.target;
+        if (target.classList.contains("cell")) {
+            handleCellClick(target.dataset.cell);
+        } else if (target.classList.contains("reset-button")) {
+            resetUI(target);
+        }
+    });
+
+    const loadGame = () => {
+        updateBoardUI();
+    }
+
+    return { loadGame }
 }
 
 (() => {
     // iife to initiate UI changes
-    const gameUI = UIController();
     document.addEventListener("click", (e) => {
         const target = e.target;
-        if (target.classList.contains("start-button")) gameUI.updateBoardUI();
-        else if (target.classList.contains("cell")) {
-            gameUI.handleCellClick(target.dataset.cell);
-        }
-        else if (target.classList.contains("reset-button")) {
-            gameUI.resetUI(target);
-        }
+        if (!target.classList.contains("start-button")) return;
+        UIController().loadGame();
     });
 })();
