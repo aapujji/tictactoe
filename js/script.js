@@ -1,4 +1,5 @@
 function GameBoard() {
+    // handles any board logic
     const board = new Array(9).fill("");
 
     const getBoard = () => board;
@@ -15,6 +16,7 @@ function GameBoard() {
 }
 
 function GameController(firstPlayerName, secondPlayerName) {
+    // handles game flow logic
     const newBoard = GameBoard();
     let isTie = false;
     let winPattern = [];
@@ -88,14 +90,19 @@ function GameController(firstPlayerName, secondPlayerName) {
 }
 
 const UIController = () => {
+    // handles any changes to the UI
     // dom cache
     const boardDiv = document.querySelector(".board");
     const form = document.querySelector(".form");
-    const playerBoardDiv = document.querySelector(".player-board");
+    const playerBoardDiv = document.querySelector(".player-info");
     const currentPlayerDiv = document.querySelector(".current-player");
     const firstPlayerName = document.querySelector("input#firstPlayer").value || "Player One";
     const secondPlayerName = document.querySelector("input#secondPlayer").value || "Player Two";
     const resetButton = document.querySelector(".reset-button");
+
+    const newGame = GameController(firstPlayerName, secondPlayerName);
+    const board = newGame.getBoard();
+
 
     const hideElement = (elem) => {
         elem.classList.add("hidden");
@@ -115,16 +122,13 @@ const UIController = () => {
         return elem;
     }
 
-    hideElement(form);
-    playerBoardDiv.querySelector(".first-player").textContent = `${firstPlayerName} (x)`;
-    playerBoardDiv.querySelector(".second-player").textContent = `${secondPlayerName} (o)`;
-    showElement(playerBoardDiv);
-    showElement(boardDiv);
-
-    const newGame = GameController(firstPlayerName, secondPlayerName);
-    const board = newGame.getBoard();
-
     const updateBoardUI = () => {
+        hideElement(form);
+        playerBoardDiv.querySelector(".first-player").textContent = `${firstPlayerName} (x)`;
+        playerBoardDiv.querySelector(".second-player").textContent = `${secondPlayerName} (o)`;
+        showElement(playerBoardDiv);
+        showElement(boardDiv);
+
         boardDiv.textContent = "";
         board.map((content, cell) => {
             const cellDiv = createUIElement("button", {class: "cell", "data-cell": cell});
@@ -148,7 +152,6 @@ const UIController = () => {
                 showElement(resetButton);
                 const cellDivs = boardDiv.querySelectorAll(".cell");
                 cellDivs.forEach((cellDiv) => {
-                    console.log(typeof newGame.getWinPattern()[0]);
                     if (newGame.getWinPattern().includes(Number(cellDiv.dataset.cell))) {
                         cellDiv.classList.add("win");
                     }
@@ -159,25 +162,33 @@ const UIController = () => {
         }
     }
 
-    updateBoardUI();
-
-    document.addEventListener("click", (e) => {
-        const target = e.target;
-        if (target.classList.contains("cell")) {
-            if (!newGame.getIsTie()) {
-                newGame.playTurn(target.dataset.cell);
-            }
-        } else if (target.classList.contains("reset-button")) {
-            hideElement(target);
-            newGame.resetGame();
+    const handleCellClick = (cell) => {
+        if (!newGame.getIsTie()) {
+            newGame.playTurn(cell);
+            updateBoardUI();
         }
+    }
+
+    const resetUI = (target) => {
+        hideElement(target);
+        newGame.resetGame();
         updateBoardUI();
-    })
+    }
+
+    return { updateBoardUI, handleCellClick, resetUI }
 }
 
 (() => {
-    const startButton = document.querySelector(".start-button");
-    startButton.addEventListener("click", () => {
-        UIController();
+    // iife to initiate UI changes
+    const gameUI = UIController();
+    document.addEventListener("click", (e) => {
+        const target = e.target;
+        if (target.classList.contains("start-button")) gameUI.updateBoardUI();
+        else if (target.classList.contains("cell")) {
+            gameUI.handleCellClick(target.dataset.cell);
+        }
+        else if (target.classList.contains("reset-button")) {
+            gameUI.resetUI(target);
+        }
     });
 })();

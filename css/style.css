@@ -4,6 +4,7 @@
     --lightishblue: #364545;
     --darkblue: #28373B;
     --darkerblue: #1f2c2e;
+    --blueblack: #131a1c;
     --orange: #A35228;
     --yellow: #DAA547;
     --teal: #608E81;
@@ -66,6 +67,18 @@ button {
     grid-template-rows: repeat(12, 1fr);
 }
 
+.header {
+    grid-column: 1 / 13;
+    grid-row-start: 1;
+    align-self: baseline;
+    padding: 1rem;
+    background-color: var(--blueblack);
+
+    img {
+        width: 2.5rem;
+    }
+}
+
 .form {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -87,7 +100,7 @@ button {
     }
 }
 
-.player-board {
+.player-info {
     background-color: var(--darkerblue);
     min-width: 320px;
     grid-column: 1 / 13;
@@ -107,7 +120,7 @@ button {
     }
 
     .player-name {
-        font-size: 2rem;
+        font-size: 1.2rem;
         font-weight: 600;
     }
 
@@ -148,7 +161,7 @@ button {
     gap: 1rem;
     aspect-ratio: 1 / 1;
     grid-column: 1 / 13;
-    grid-row-start: 5;
+    grid-row-start: 4;
     padding: 1rem;
 
     &.hidden {
@@ -192,8 +205,23 @@ button {
 
 .reset-button {
     grid-column: 4 / 10;
-    grid-row-start: 9;
+    grid-row-start: 6;
     max-height: 52px;
+}
+
+.footer {
+    background-color: var(--darkerblue);
+    color: var(--teal);
+    grid-column: 1 / 13;
+    grid-row-end: 13;
+    align-self: end;
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+
+    a {
+        color: var(--teal);
+    }
 }
 
 @media (prefers-color-scheme: light) {
@@ -215,7 +243,7 @@ button {
 
 @media (min-width: 767px) {
     .form {
-        grid-column: 3 / 11;
+        grid-column: 4 / 10;
         grid-row: 3 / 4;
         padding: 0;
         gap: 2rem;
@@ -225,14 +253,25 @@ button {
         }
     }
 
+    .player-info {
+        .players {
+            padding: 2rem 1rem;
+        }
+
+        .player-name {
+            font-size: 2rem;
+        }
+    }
+
     .board {
         grid-column: 5 / 9;
-        grid-row: 3 / 8;
+        grid-row-start: 5;
         padding: 0;
     }
 
     .reset-button {
         grid-column: 6 / 8;
+        grid-row-start: 8;
     }
 }
 
