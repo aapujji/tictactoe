@@ -40,6 +40,7 @@ function GameController(firstPlayerName, secondPlayerName) {
         marker: "o",
     };
     let currentPlayer = firstPlayer;
+    const board = newBoard.getBoard();
 
     const getCurrentPlayer = () => {
         return currentPlayer;
@@ -58,25 +59,25 @@ function GameController(firstPlayerName, secondPlayerName) {
     }
 
     const playTurn = (cell) => {
-        newBoard.addMarker(cell, currentPlayer.marker);
+        if (!board[cell]) {
+            newBoard.addMarker(cell, currentPlayer.marker);
 
-        const board = newBoard.getBoard();
-
-        for (const pattern of winPatterns) {
-            if (board[pattern[0]] && board[pattern[1]] && board[pattern[2]] && 
-                board[pattern[0]] === board[pattern[1]] && board[pattern[0]] === board[pattern[2]]) {
-                    winPattern = Object.values(pattern);
-                    return;
+            for (const pattern of winPatterns) {
+                if (board[pattern[0]] && board[pattern[1]] && board[pattern[2]] && 
+                    board[pattern[0]] === board[pattern[1]] && board[pattern[0]] === board[pattern[2]]) {
+                        winPattern = Object.values(pattern);
+                        return;
+                }
             }
-        }
 
-        const boardFull = board.filter((cell) => !cell);
-        if (!boardFull.length) {
-            isTie = true;
-            return;
-        }
+            const boardFull = board.filter((cell) => !cell);
+            if (!boardFull.length) {
+                isTie = true;
+                return;
+            }
 
-        switchCurrentPlayer();
+            switchCurrentPlayer();
+        }
     }
 
     const resetGame = () => {
