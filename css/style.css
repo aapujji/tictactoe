@@ -79,12 +79,17 @@ button {
     }
 }
 
+.main {
+    display: grid;
+    grid-column: 1 / 13;
+    grid-template-columns: repeat(12, 1fr);
+}
+
 .form {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: 1fr 1fr;
     gap: 1rem;
-    grid-column: 1 / 13;
     padding: 1rem;
 
     &.hidden {
@@ -93,6 +98,57 @@ button {
 
     .field {
         grid-column: span 4;
+        display: flex;
+
+        &.hard-mode {
+            grid-column: span 8;
+            justify-self: center;
+        }
+    }
+
+    .hard-mode-checkbox {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .label {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.875rem;
+    }
+
+    .slider {
+        background-color: var(--darkblue);
+        border: 1px solid var(--white);
+        border-radius: 34px;
+        width: 50px;
+        height: 26px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        -webkit-transition: .4s;
+        transition: .4s;
+
+        &.checked {
+            background-color: var(--teal);
+
+            &:before {
+                transform: translateX(22px);
+            }
+        }
+
+        &:before {
+            background-color: var(--white);
+            border-radius: 50%;
+            width: 17px;
+            height: 17px;
+            content: "";
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
     }
 
     .start-button {
@@ -225,6 +281,10 @@ button {
 }
 
 @media (min-width: 767px) {
+    .main {
+        gap: 2rem;
+    }
+
     .form {
         grid-column: 4 / 10;
         grid-row: 3 / 4;
@@ -248,13 +308,13 @@ button {
 
     .board {
         grid-column: 5 / 9;
-        grid-row-start: 5;
+        grid-row-start: 3;
         padding: 0;
     }
 
     .reset-button {
-        grid-column: 6 / 8;
-        grid-row-start: 8;
+        grid-column: 5 / 9;
+        grid-row-start: 5;
     }
 }
 

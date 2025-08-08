@@ -3,7 +3,7 @@
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,25 +14,34 @@
         <header class="header">
             <img src="./assets/tic-tac-toe.png" alt="logo"/>
         </header>
-        <form action="#" class="form">
-            <div class="field">
-                <input type="text" class="input" name="firstPlayer" id="firstPlayer" placeholder="Player One">
+        <main class="main">
+            <form action="#" class="form">
+                <div class="field">
+                    <input type="text" class="input" name="firstPlayer" id="firstPlayer" placeholder="Player One">
+                </div>
+                <div class="field">
+                    <input type="text" class="input" name="secondPlayer" id="secondPlayer" placeholder="Player Two">
+                </div>
+                <div class="field hard-mode">
+                    <label class="label" for="hardMode">
+                        <span>Hard Mode</span>
+                        <input type="checkbox" class="hard-mode-checkbox" name="hardMode" id="hardMode">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <button type="button" class="start-button">Start Game</button>
+            </form>
+            <div class="hidden player-info">
+                <div class="players">
+                    <div class="player-name first-player"></div>
+                    <div class="versus">vs</div>
+                    <div class="player-name second-player"></div>
+                </div>
+                <div class="current-player"></div>
             </div>
-            <div class="field">
-                <input type="text" class="input" name="secondPlayer" id="secondPlayer" placeholder="Player Two">
-            </div>
-            <button type="button" class="start-button">Start Game</button>
-        </form>
-        <div class="hidden player-info">
-            <div class="players">
-                <div class="player-name first-player"></div>
-                <div class="versus">vs</div>
-                <div class="player-name second-player"></div>
-            </div>
-            <div class="current-player"></div>
-        </div>
-        <div class="hidden board"></div>
-        <button type="button" class="reset-button hidden"><img class="icon" src="./assets/reset.svg" /> Play Again</button>
+            <div class="hidden board"></div>
+            <button type="button" class="reset-button hidden"><img class="icon" src="./assets/reset.svg" /> Play Again</button>
+        </main>
         <footer class="footer">
             <p>Made by <a href="">Aanandita Pujji</a> as part of <a href="">The Odin Project</a>. Tic tac toe icon created by <a href="https://www.flaticon.com/free-icons/tic-tac-toe" title="tic tac toe icon">Peter Lakenbrink - Flaticon</a></p>
         </footer>

@@ -6,13 +6,55 @@ function GameBoard() {
 
     const addMarker = (cell, marker) => board[cell] = marker;
 
+    const removeMarker = (cell) => board[cell] = "";
+
     const clearBoard = () => {
         for (let i = 0; i < board.length; i++) {
             board[i] = "";
         }
     }
 
-    return { getBoard, addMarker, clearBoard }
+    return { 
+        getBoard,
+        addMarker,
+        removeMarker,
+        clearBoard
+    }
+}
+
+function Player(name, marker) {
+    let moves = [];
+    let score = 0;
+    const addMove = (index) => {
+        moves.push(index);
+    }
+    const getMoves = () => {
+        return moves;
+    }
+    const resetMoves = () => {
+        moves = [];
+    }
+    const removeMove = () => {
+        moves.shift();
+    }
+    const setScore = () => {
+        score++;
+    }
+
+    const getScore = () => {
+        return score;
+    }
+
+    return { 
+        name, 
+        marker, 
+        setScore, 
+        getScore, 
+        addMove, 
+        removeMove, 
+        getMoves,
+        resetMoves,
+    }
 }
 
 function GameController(firstPlayerName, secondPlayerName) {
@@ -31,14 +73,8 @@ function GameController(firstPlayerName, secondPlayerName) {
         [2,4,6]
     ];
 
-    const firstPlayer = {
-        name: firstPlayerName,
-        marker: "x",
-    };
-    const secondPlayer = {
-        name: secondPlayerName,
-        marker: "o",
-    };
+    const firstPlayer = Player(firstPlayerName, "x");
+    const secondPlayer = Player(secondPlayerName, "o");
     let currentPlayer = firstPlayer;
     const board = newBoard.getBoard();
 
@@ -58,9 +94,18 @@ function GameController(firstPlayerName, secondPlayerName) {
         currentPlayer = currentPlayer === firstPlayer ? secondPlayer : firstPlayer;
     }
 
-    const playTurn = (cell) => {
+    const playTurn = (cell, hardMode = false) => {
         if (!board[cell]) {
             newBoard.addMarker(cell, currentPlayer.marker);
+            currentPlayer.addMove(cell);
+
+            console.log(hardMode);
+            if (hardMode) {
+                if (currentPlayer.getMoves().length === 4) {
+                    newBoard.removeMarker(currentPlayer.getMoves()[0]);
+                    currentPlayer.removeMove();
+                }
+            }
 
             for (const pattern of winPatterns) {
                 if (board[pattern[0]] && board[pattern[1]] && board[pattern[2]] && 
@@ -84,10 +129,20 @@ function GameController(firstPlayerName, secondPlayerName) {
         newBoard.clearBoard();
         isTie = false;
         winPattern = [];
+        firstPlayer.resetMoves();
+        secondPlayer.resetMoves();
         switchCurrentPlayer();
     }
 
-    return { getIsTie, getWinPattern, getCurrentPlayer, switchCurrentPlayer, playTurn, getBoard: newBoard.getBoard, resetGame }
+    return { 
+        getIsTie, 
+        getWinPattern, 
+        getCurrentPlayer, 
+        switchCurrentPlayer, 
+        playTurn, 
+        resetGame,
+        getBoard: newBoard.getBoard 
+    }
 }
 
 const UIController = () => {
@@ -103,7 +158,7 @@ const UIController = () => {
 
     const newGame = GameController(firstPlayerName, secondPlayerName);
     const board = newGame.getBoard();
-
+    let hardMode = false;
 
     const hideElement = (elem) => {
         elem.classList.add("hidden");
@@ -165,7 +220,7 @@ const UIController = () => {
 
     const handleCellClick = (cell) => {
         if (!newGame.getIsTie()) {
-            newGame.playTurn(cell);
+            newGame.playTurn(cell, hardMode);
             updateBoardUI();
         }
     }
@@ -174,6 +229,10 @@ const UIController = () => {
         hideElement(target);
         newGame.resetGame();
         updateBoardUI();
+    }
+
+    const toggleHardMode = () => {
+        hardMode = !hardMode;
     }
 
     document.addEventListener("click", (e) => {
@@ -185,7 +244,8 @@ const UIController = () => {
         }
     });
 
-    const loadGame = () => {
+    const loadGame = (hardMode) => {
+        if (hardMode) toggleHardMode();
         updateBoardUI();
     }
 
@@ -194,9 +254,15 @@ const UIController = () => {
 
 (() => {
     // iife to initiate UI changes
+    const input = document.querySelector(".hard-mode-checkbox");
     document.addEventListener("click", (e) => {
         const target = e.target;
-        if (!target.classList.contains("start-button")) return;
-        UIController().loadGame();
+        if (target.classList.contains("start-button")) {
+            const hardMode = input.checked ? true : false;
+            UIController().loadGame(hardMode);
+        } else if (target.classList.contains("slider")) {
+            target.classList.toggle("checked");
+            input.checked = input.checked ? true : false;
+        }
     });
 })();
