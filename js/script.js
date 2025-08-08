@@ -99,7 +99,6 @@ function GameController(firstPlayerName, secondPlayerName) {
             newBoard.addMarker(cell, currentPlayer.marker);
             currentPlayer.addMove(cell);
 
-            console.log(hardMode);
             if (hardMode) {
                 if (currentPlayer.getMoves().length === 4) {
                     newBoard.removeMarker(currentPlayer.getMoves()[0]);
