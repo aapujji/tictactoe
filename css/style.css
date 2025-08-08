@@ -89,6 +89,7 @@ button {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: 1fr 1fr;
+    grid-column: 1 / 13;
     gap: 1rem;
     padding: 1rem;
 
@@ -259,10 +260,20 @@ button {
     }
 }
 
-.reset-button {
-    grid-column: 4 / 10;
+.buttons {
+    display: flex;
+    gap: 1rem;
+    grid-column: 1 / 13;
     grid-row-start: 6;
     max-height: 52px;
+
+    &.hidden {
+        display: none;
+    }
+
+    button {
+        flex: 1;
+    }
 }
 
 .footer {
@@ -312,7 +323,7 @@ button {
         padding: 0;
     }
 
-    .reset-button {
+    .buttons {
         grid-column: 5 / 9;
         grid-row-start: 5;
     }
