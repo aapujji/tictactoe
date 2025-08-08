@@ -214,7 +214,7 @@ button {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: repeat(12, 1fr);
-    min-width: 320px;
+    width: 320px;
     gap: 1rem;
     aspect-ratio: 1 / 1;
     grid-column: 1 / 13;
@@ -297,7 +297,7 @@ button {
     }
 
     .form {
-        grid-column: 4 / 10;
+        grid-column: 3 / 11;
         grid-row: 3 / 4;
         padding: 0;
         gap: 2rem;
